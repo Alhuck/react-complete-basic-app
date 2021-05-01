@@ -1,18 +1,27 @@
 import React, {useState} from 'react';
 import classes from './User.module.css';
 import { inferredPredicate } from '@babel/types';
+import ErrorModal from './Modal/ErrorModal';
 
 
 const User = (props) => {
 
     const [userName, setUserName] = useState('');
     const [userAge, setUserAge] = useState('');
+    let isShowModal;
+
+    const resetUserDetails = () => {
+
+        setUserName('');
+        setUserAge('');
+    }
 
     const OnSubmitHandler = (event) => {
         event.preventDefault();
 
-        if(userName.trim().length === 0 || userAge.trim().length === 0) {
-            alert('Add User Details');
+        if (userName.trim().length === 0 || userAge.trim().length === 0 || parseInt(userAge) < 0) {
+
+            isShowModal();
             return;
         }
         const userDetails = {
@@ -21,7 +30,8 @@ const User = (props) => {
             age: userAge
         }
 
-        props.formSubmit(userDetails)
+        props.formSubmit(userDetails);
+        resetUserDetails();
     }
 
     const userNameChangeHandler = (event) => {
@@ -32,8 +42,25 @@ const User = (props) => {
         setUserAge(event.target.value);
     }
 
+
+    const openModal = (ele) => {
+        isShowModal = ele;
+    }
+
+    const errorMsgToRender = () => {
+
+        if(userName.trim().length == 0) {
+            return 'Enter proper user name';
+        } else if (userAge.trim().length == 0 || parseInt(userAge) < 0) {
+            return 'Enter proper user age';
+        } else {
+            return 'xxxx';
+        }
+    }
+
     return (
         <form onSubmit={OnSubmitHandler}>
+            <ErrorModal onShowModal={openModal} labelMsg={errorMsgToRender()}/>
             <div>
                 <label> UserName </label>
                 <input type="text" value={userName} onChange={userNameChangeHandler}/>
