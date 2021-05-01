@@ -15,6 +15,7 @@ const ErrorModal = (props) => {
         }
     };
 
+    Modal.setAppElement('body');
     const openModal = () => {
         setIsOpen(true);
     }
